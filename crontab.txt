@@ -1,0 +1,9 @@
+#Start Emercoind
+@reboot emercoind -rescan
+@reboot /home/emc/start_emc_pos_cron.sh
+#Wallet scripts
+* * * * * php /var/www/emcchain/tools/tx_listener.php
+0 1 * * * php /var/www/emcchain/tools/pay_stake.php
+#Exchange
+0 * * * * php /var/www/emcchain/tools/exchangeapi.php > /dev/null
+0 0 * * * php /var/www/emcchain/tools/exchangeapi_full.php > /dev/null
