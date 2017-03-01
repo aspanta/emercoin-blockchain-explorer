@@ -1,13 +1,14 @@
 <?php
 session_start();
-error_reporting(E_ALL); 
-ini_set("display_errors", 1); 
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 date_default_timezone_set('UTC');
 
 if (!empty($_COOKIE["lang"])) {
 	$lang=$_COOKIE["lang"];
 	require("lang/".$lang.".php");
 } else {
+	$lang="en";
 	setcookie("lang","en",time()+(3600*24*14), "/");
 	require("lang/en.php");
 }
@@ -58,13 +59,13 @@ if (!empty($_COOKIE["lang"])) {
 			switch ($lang){
 				case "cn":
 					echo '<img src="/lang/cn.png"> CN ';
-					break; 
+					break;
 				case "de":
 					echo '<img src="/lang/de.png"> DE ';
-					break;     
+					break;
 				case "en":
 					echo '<img src="/lang/en.png"> EN ';
-					break;     					
+					break;
 				default:
 					echo '<img src="/lang/en.png"> EN ';
 					break;
@@ -77,7 +78,7 @@ if (!empty($_COOKIE["lang"])) {
 							<li><a href="javascript:setLanguage('en');"><img src="/lang/en.png"> EN</a></li>
 						  </ul>
 						</li>
-		
+
       </ul>
   </div><!-- /.container-fluid -->
 </nav>
@@ -114,11 +115,11 @@ if (!empty($_COOKIE["lang"])) {
 		<div class="collapse" id="collapseDonations">
 		<p class="text-muted"><sub>
 		<b><?php echo lang('DONATION_DONATION'); ?></b><br>
-			[EMC] <a href="emercoin:EZRcD6ZfGJLaYSkKwZYRkrhVGxk1mimG93?amount=0&label=Donation - emercoin.mintr.org">EZRcD6ZfGJLaYSkKwZYRkrhVGxk1mimG93</a><br> 
-			[PPC] <a href="peercoin:PTDnVfgcDVk417rLXrokC3nLj44tFZ3Hyw?amount=0&label=Donation - emercoin.mintr.org">PTDnVfgcDVk417rLXrokC3nLj44tFZ3Hyw</a><br> 
-			[BIT] <a href="bitcf:BKR7j2uCPrsZ3VEVw6j3GwA6pkQSpHTbvU?amount=0&label=Donation - emercoin.mintr.org">BKR7j2uCPrsZ3VEVw6j3GwA6pkQSpHTbvU</a><br> 
+			[EMC] <a href="emercoin:EZRcD6ZfGJLaYSkKwZYRkrhVGxk1mimG93?amount=0&label=Donation - emercoin.mintr.org">EZRcD6ZfGJLaYSkKwZYRkrhVGxk1mimG93</a><br>
+			[PPC] <a href="peercoin:PTDnVfgcDVk417rLXrokC3nLj44tFZ3Hyw?amount=0&label=Donation - emercoin.mintr.org">PTDnVfgcDVk417rLXrokC3nLj44tFZ3Hyw</a><br>
+			[BIT] <a href="bitcf:BKR7j2uCPrsZ3VEVw6j3GwA6pkQSpHTbvU?amount=0&label=Donation - emercoin.mintr.org">BKR7j2uCPrsZ3VEVw6j3GwA6pkQSpHTbvU</a><br>
 			[BTC] <a href="bitcoin:1N1G4Ac8vkvMpMKDksrxuHpkRiC86KsBvX ?amount=0&label=Donation - emercoin.mintr.org">1N1G4Ac8vkvMpMKDksrxuHpkRiC86KsBvX </a><br>
-		
+
 		<b><?php echo lang('REFERRAL_REFERRAL'); ?></b><br>
 			Start mining Bitcoins from $1.20 per 10GH/s here: <a href="https://hashflare.io/r/AD872628" target="_blank">Hashflare.io</a><br>
 			Sell your Bitcoins for Emercoins here: <a href="https://livecoin.net?from=Livecoin-20e00c47" target="_blank">Livecoin.net</a><br>
@@ -126,7 +127,7 @@ if (!empty($_COOKIE["lang"])) {
 		</div>
 		<p class="text-muted">
 		<sub><?php echo lang('INFO_FEEDBACK'); ?>: <a href="https://bitcointalk.org/index.php?topic=958008.0" target="_blank">Bitcointalk</a> | <a href="mailto:admin@mintr.org">E-Mail</a></sub><br>
-		<sub>v.1.6.4</sub></p>
+		<sub>v.1.6.5</sub></p>
       </div>
 </footer>
 </body>

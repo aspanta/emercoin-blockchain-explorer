@@ -6,6 +6,7 @@ if (!empty($_COOKIE["lang"])) {
 	$lang=$_COOKIE["lang"];
 	require("lang/".$lang.".php");
 } else {
+	$lang="en";
 	setcookie("lang","en",time()+(3600*24*14), "/");
 	require("lang/en.php");
 }
@@ -64,17 +65,17 @@ if (isset($_SERVER['REQUEST_URI'])) {
 		$include_file="search";
 		if (isset($URI[2])) {
 			$searchinput=$URI[2];
-		}	
+		}
 	}
 }
 
 ?>
 
-<?php	
+<?php
 if ($include_file=="api") {
 	include ($include_file.".php");
 	exit;
-}	
+}
 ?>
 
 
@@ -171,7 +172,7 @@ if ($include_file=="api") {
 						}
 					}
 				?>
-			</ul>	
+			</ul>
 		<form class="navbar-form navbar-left" role="search" action="javascript:search();">
 			<div class="form-group ">
 				<input type="text" id="search" class="form-control" placeholder="<?php echo lang('ADDRESS_TX'); ?>" value="<?php echo $searchinput; ?>">
@@ -185,13 +186,13 @@ if ($include_file=="api") {
 			switch ($lang){
 				case "cn":
 					echo '<img src="/lang/cn.png"> CN ';
-					break; 
+					break;
 				case "de":
 					echo '<img src="/lang/de.png"> DE ';
-					break;     
+					break;
 				case "en":
 					echo '<img src="/lang/en.png"> EN ';
-					break;     					
+					break;
 				default:
 					echo '<img src="/lang/en.png"> EN ';
 					break;
@@ -204,14 +205,14 @@ if ($include_file=="api") {
 							<li><a href="javascript:setLanguage('en');"><img src="/lang/en.png"> EN</a></li>
 						  </ul>
 						</li>
-		
+
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
 
 	<script type="text/javascript">
-	
+
 	$("#logout").click(function() {
 		var request = $.ajax({
 			type: "GET",
@@ -221,7 +222,7 @@ if ($include_file=="api") {
 			window.location.href = '/wallet';
 		});
 	});
-	
+
 	function setLanguage(lang) {
 		var request = $.ajax({
 			type: "POST",
@@ -232,14 +233,14 @@ if ($include_file=="api") {
 			location.reload();
 		});
 	};
-			
+
 	function search() {
 		window.location.href = '/search/'+$("#search").val();
 	};
 	</script>
 
 	<!-- Beginn include -->
-	<?php			 
+	<?php
 		include ($include_file.".php");
 	?>
 	<!-- Ende include-->
@@ -254,10 +255,10 @@ if ($include_file=="api") {
 		<div class="collapse" id="collapseDonations">
 		<p class="text-muted"><sub>
 		<b><?php echo lang('DONATION_DONATION'); ?></b><br>
-			[EMC] <a href="emercoin:EZRcD6ZfGJLaYSkKwZYRkrhVGxk1mimG93?amount=0&label=Donation - emercoin.mintr.org">EZRcD6ZfGJLaYSkKwZYRkrhVGxk1mimG93</a><br> 
-			[PPC] <a href="peercoin:PTDnVfgcDVk417rLXrokC3nLj44tFZ3Hyw?amount=0&label=Donation - emercoin.mintr.org">PTDnVfgcDVk417rLXrokC3nLj44tFZ3Hyw</a><br> 
+			[EMC] <a href="emercoin:EZRcD6ZfGJLaYSkKwZYRkrhVGxk1mimG93?amount=0&label=Donation - emercoin.mintr.org">EZRcD6ZfGJLaYSkKwZYRkrhVGxk1mimG93</a><br>
+			[PPC] <a href="peercoin:PTDnVfgcDVk417rLXrokC3nLj44tFZ3Hyw?amount=0&label=Donation - emercoin.mintr.org">PTDnVfgcDVk417rLXrokC3nLj44tFZ3Hyw</a><br>
 			[BTC] <a href="bitcoin:1N1G4Ac8vkvMpMKDksrxuHpkRiC86KsBvX ?amount=0&label=Donation - emercoin.mintr.org">1N1G4Ac8vkvMpMKDksrxuHpkRiC86KsBvX </a><br>
-		
+
 		<b><?php echo lang('REFERRAL_REFERRAL'); ?></b><br>
 			Start mining Bitcoins from $1.20 per 10GH/s here: <a href="https://hashflare.io/r/AD872628" target="_blank">Hashflare.io</a><br>
 			Sell your Bitcoins for Emercoins here: <a href="https://livecoin.net?from=Livecoin-20e00c47" target="_blank">Livecoin.net</a><br>
@@ -265,7 +266,7 @@ if ($include_file=="api") {
 		</div>
 		<p class="text-muted">
 		<sub><?php echo lang('INFO_FEEDBACK'); ?>: <a href="https://bitcointalk.org/index.php?topic=958008.0" target="_blank">Bitcointalk</a> | <a href="mailto:admin@mintr.org">E-Mail</a></sub><br>
-		<sub>v.1.6.4</sub></p>
+		<sub>v.1.6.5</sub></p>
       </div>
 </footer>
 </body>
