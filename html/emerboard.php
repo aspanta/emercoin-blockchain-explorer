@@ -1,5 +1,4 @@
 <?php
-include ('dbconnect.inc.php');
 $query="SELECT MAX(height) AS height FROM blocks";
 $result = $dbconn->query($query);
 while($row = $result->fetch_assoc())
