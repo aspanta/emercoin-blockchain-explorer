@@ -3,7 +3,7 @@ require_once __DIR__ . '/../tools/include.php';
 $query="SELECT MAX(height) AS height, MAX(time) AS time FROM blocks";
 $result = $dbconn->query($query);
 while($row = $result->fetch_assoc())
-{	
+{
 	$height=$row['height'];
 	$block_time=$row['time'];
 }
@@ -11,7 +11,7 @@ while($row = $result->fetch_assoc())
 $query="SELECT MAX(id) AS id FROM nvs";
 $result = $dbconn->query($query);
 while($row = $result->fetch_assoc())
-{	
+{
 	$nvs_id=$row['id'];
 }
 
@@ -27,7 +27,7 @@ if (isset($_SERVER['REQUEST_URI'])) {
 				$sn=urldecode($URI[3]);
 				$sn=str_replace('&\&','/',$sn);
 			}
-		}	
+		}
 	}
 }
   function isImage($url)
@@ -37,7 +37,7 @@ if (isset($_SERVER['REQUEST_URI'])) {
                ));
      $ctx = stream_context_create($params);
      $fp = @fopen($url, 'rb', false, $ctx);
-     if (!$fp) 
+     if (!$fp)
         return false;  // Problem with url
 
     $meta = stream_get_meta_data($fp);
@@ -50,7 +50,7 @@ if (isset($_SERVER['REQUEST_URI'])) {
     $wrapper_data = $meta["wrapper_data"];
     if(is_array($wrapper_data)){
       foreach(array_keys($wrapper_data) as $hh){
-          if (substr($wrapper_data[$hh], 0, 19) == "Content-Type: image") // strlen("Content-Type: image") == 19 
+          if (substr($wrapper_data[$hh], 0, 19) == "Content-Type: image") // strlen("Content-Type: image") == 19
           {
             fclose($fp);
             return true;
@@ -64,6 +64,7 @@ if (isset($_SERVER['REQUEST_URI'])) {
 function makeClickableLinks($s) {
 	//$remove = array("\n", "\r\n", "\r");
 	//$s = str_replace($remove, ' <br> ', $s);
+	$org=$s;
 	$text=explode (' ',$s);
 	foreach ($text as $s) {
 		if (strpos($s,'http') !== false || strpos($s,'ftp') !== false) {
@@ -73,16 +74,15 @@ function makeClickableLinks($s) {
 				$s=preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1">$1</a>', $s);
 			}
 			return $s;
-		} else {
-			if (strpos($s,'@') !== false && strpos($s,'.') !== false) {
+		} else if (strpos($s,'@') !== false && strpos($s,'.') !== false) {
 				$pattern = '#([0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.';
 				$pattern .= '[a-wyz][a-z](fo|g|l|m|mes|o|op|pa|ro|seum|t|u|v|z)?)#i';
 				$replacement = '<a href="mailto:\\1">\\1</a>';
 				$s = preg_replace($pattern, $replacement, $s);
+				return $s;
 			}
-			return $s;
+			return $org;
 		}
-	}
 }
 
 function Tokenize($item) {
@@ -91,7 +91,7 @@ function Tokenize($item) {
 			foreach(explode(PHP_EOL, $item['value']) as $val_line) {
 			  if(substr($val_line, 0, 2) === "F-")
 				array_push($for_sig, trim($val_line));
-			  if(preg_match('/^([A-Za-z0-9_-]+)\s*=\s*(.+)\s*/', $val_line, $tok)) 
+			  if(preg_match('/^([A-Za-z0-9_-]+)\s*=\s*(.+)\s*/', $val_line, $tok))
 				$tokens[$tok[1]] = utf8_decode(trim($tok[2]));
 			}
 			$tokens['__FOR_SIG__'] =  join('|', $for_sig);
@@ -129,7 +129,7 @@ function PrintTok($tokens) {
 		 <form class="form-inline">
 			<input type="text" id="inputBrand" size="30" class="form-control" placeholder="<?php echo 'Brand'; ?>" value="<?php echo $brand; ?>">
 			<input type="text" id="inputSN" size="30" class="form-control" placeholder="<?php echo 'Serial Number'; ?>" value="<?php echo $sn; ?>">
-			
+
 			<a class="btn btn-primary" onclick="javascript:sendParameters();" role="button"><?php echo 'Verify'; ?></a></button>
 		 </form>
 
@@ -145,41 +145,42 @@ function PrintTok($tokens) {
 				sendParameters();
 			}
 		});
-		
+
 		$('#inputBrand').on('keyup', function(e) {
 			if (e.which == 13) {
 				sendParameters();
 			}
 		});
-		
+
 
 		function sendParameters() {
 			var brand = document.getElementById('inputBrand').value;
-			var brand = brand.replace(/\//g, "&\\&"); 
+			var brand = brand.replace(/\//g, "&\\&");
 			var sn = document.getElementById('inputSN').value;
-			var sn = sn.replace(/\//g, "&\\&"); 
+			var sn = sn.replace(/\//g, "&\\&");
 			window.location.href = '/dpo/'+brand+'/'+sn;
 		};
 	</script>
-		
+
 	<p>
-		
-		
+
+
 	<?php
 	if ($brand!='') {
 		$brand_param = htmlspecialchars($brand);
 		try {
+			error_reporting(0);
 			$brand_info=$emercoin->name_show('dpo:'.$brand);
 			echo "<p><b>Brand info: $brand_param</b><br/>";
-			$brandtok=Tokenize($brand_info);		
+			$brandtok=Tokenize($brand_info);
 			PrintTok($brandtok);
 		} catch (Exception $e) {
 			echo '<p><b>Brand "'.$brand_param.'" not found</b><br/><p>';
 		}
 	}
-	
+
 	if ($sn!='') {
-		$sn = preg_replace('/[^0-9A-Za-z]/', '', $sn);
+		$sn = preg_replace('/[^0-9A-Za-z_-]/', '', $sn);
 		echo "<p><b>Serial: $sn</b></p>";
 		$filt_key = 'dpo:'.$brand.':'.$sn.':';
 		$filt_list = $emercoin->name_filter($filt_key);
@@ -192,21 +193,28 @@ function PrintTok($tokens) {
 		  $tokens = Tokenize($item);
 		  echo "<p>Item: " . $item['name'] . "<br/>";
 		  PrintTok($tokens);
-
-		  try {
-			$ver = $emercoin->verifymessage($brand_info['address'], $tokens['Signature'], $tokens['__FOR_SIG__'])? 
-			  "<font color='green'>PASSED</font>" : "<font color='red'>FAILED</font>";
-			echo "<b>Verification: $ver</b>";
-		  } catch(Exception $ex) {
-			echo "<br></br><b>Verification: <font color='red'>FAILED</font></b><br>";
-			//echo "Blockchain request error: ". $ex->getMessage() . "\n";
-			echo "<small class='text-muted'>Blockchain request error - CALL: verifymessage '" . $brand_info['address']. "' '" . $tokens['Signature'] . "' '" . $tokens['__FOR_SIG__'] . "'</small><p>";
-		   }
-		  echo "</p>";
+			if (isset($tokens['Signature'])) {
+			  try {
+				$ver = $emercoin->verifymessage($brand_info['address'], $tokens['Signature'], $tokens['__FOR_SIG__'])?
+				  "<font color='green'>PASSED</font><br><small class='text-muted'>(signature verified)</small>" : "<font color='red'>FAILED</font>";
+				echo "<b>Verification: $ver</b>";
+			  } catch(Exception $ex) {
+				echo "<br></br><b>Verification: <font color='red'>FAILED</font></b><br>";
+				//echo "Blockchain request error: ". $ex->getMessage() . "\n";
+				echo "<small class='text-muted'>Blockchain request error - CALL: verifymessage '" . $brand_info['address']. "' '" . $tokens['Signature'] . "' '" . $tokens['__FOR_SIG__'] . "'</small><p>";
+			   }
+			  echo "</p>";
+			} else {
+				$history=$emercoin->name_history($item['name']);
+				if ($brand_info['address']==$history[0]['address']) {
+					 echo "<b>Verification: <font color='green'>PASSED</font></b><br><small class='text-muted'>(address verified)</small>";
+				} else {
+					echo "<b>Verification: <font red='green'>FAILED</font></b><br><small class='text-muted'></small>";
+				}
+			}
 		} // foreach $filt_list
 	}
-	?>	
+	?>
 	<div style="height:25px">
 	</div>
 </div>
-

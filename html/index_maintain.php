@@ -127,7 +127,7 @@ if (!empty($_COOKIE["lang"])) {
 		</div>
 		<p class="text-muted">
 		<sub><?php echo lang('INFO_FEEDBACK'); ?>: <a href="https://bitcointalk.org/index.php?topic=958008.0" target="_blank">Bitcointalk</a> | <a href="mailto:admin@mintr.org">E-Mail</a></sub><br>
-		<sub>v.1.6.5</sub></p>
+		<sub>v.1.6.6</sub></p>
       </div>
 </footer>
 </body>
