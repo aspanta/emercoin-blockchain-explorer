@@ -91,8 +91,8 @@ function Tokenize($item) {
 			foreach(explode(PHP_EOL, $item['value']) as $val_line) {
 			  if(substr($val_line, 0, 2) === "F-")
 				array_push($for_sig, trim($val_line));
-			  if(preg_match('/^([A-Za-z0-9_-]+)\s*=\s*(.+)\s*/', $val_line, $tok))
-				$tokens[$tok[1]] = utf8_decode(trim($tok[2]));
+				$tok=explode("=", $val_line);
+				$tokens[$tok[0]] = utf8_decode(trim($tok[1]));
 			}
 			$tokens['__FOR_SIG__'] =  join('|', $for_sig);
 			return $tokens;
