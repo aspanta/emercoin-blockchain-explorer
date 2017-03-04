@@ -92,6 +92,7 @@ function Tokenize($item) {
 			  if(substr($val_line, 0, 2) === "F-")
 				array_push($for_sig, trim($val_line));
 				$tok=explode("=", $val_line);
+				if ($tok[0]=="Signature") { $tok[1].="="; }
 				$tokens[$tok[0]] = utf8_decode(trim($tok[1]));
 			}
 			$tokens['__FOR_SIG__'] =  join('|', $for_sig);
