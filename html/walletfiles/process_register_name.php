@@ -50,6 +50,7 @@ $current_time=time();
 //check name availability
 $name_taken=0;
 try {
+	error_reporting(0);
 	$name_show=$emercoin->name_show($name);
 } catch (Exception $e) {
 	//walletlog($dbwalletconn, time(), 'error', 'Reg Name: Availability check failed', $userid, null, null);
@@ -57,10 +58,12 @@ try {
 	//exit;
 }
 
-if ($name_show['expires_in']>0) {
-	$name_taken=1;
-	echo "2";
-	exit;
+if (isset($name_show['expires_in'])) {
+	if ($name_show['expires_in']>0) {
+		$name_taken=1;
+		echo "2";
+		exit;
+	}
 }
 
 //calculate costs
@@ -78,16 +81,17 @@ while($row = $result->fetch_assoc())
 (float)$newNameFee=round(bcmul($nvs_multiplier,bcdiv(bcsqrt(bcadd(bcmul($pow_reward,bcadd(1,bcdiv($days,365,8),8),8),floor(bcdiv(bcadd($nameLength,$valueLength,8),128,8)),8),8),100,8),8),4);
 
 if ($name_taken==0 && $newNameFee<=$account_balance) {
+		$password="wv59cqm89tu43q8rn923rzxqufh29p";
 		try {
 			$emercoin->walletlock();
 		} catch (Exception $e) {
 			walletlog($dbwalletconn, time(), 'warn', 'Reg Name: walletlock failed', $userid, null, null);
 		}
 		try {
-			$emercoin->walletpassphrase($wallet_password, 10, false);
+			$emercoin->walletpassphrase($password, 10, false);
 			$txid=$emercoin->name_new($name, $value, (int)$days);
 			$emercoin->walletlock();
-			$emercoin->walletpassphrase($wallet_password, 99999999, true);
+			$emercoin->walletpassphrase($password, 99999999, true);
 		} catch (Exception $e) {
 			walletlog($dbwalletconn, time(), 'error', 'Reg Name: registration failed', $userid, null, null);
 			echo "1";
