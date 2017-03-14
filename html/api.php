@@ -1,7 +1,10 @@
 <?php
 error_reporting(0);
 ini_set("display_errors", 0);
-require_once __DIR__ . '/../tools/include.php';
+include ('dbconnect.inc.php');
+//require_once './include/jsonRPCClient.php';
+$emercoin = new jsonRPCClient('http://emercoinrpc:DRBKt7KStSXLYKjVCKUwTRJe7hhsppQiHgKMs2pWYADL@127.0.0.1:6662/');
+
 $type="";
 $subtype="";
 $pattern="";
@@ -17,10 +20,10 @@ if (isset($_SERVER['REQUEST_URI'])) {
 					$pattern=urldecode($URI[4]);
 					if (isset($URI[5])) {
 						$details=urldecode($URI[5]);
-					}
+					}	
 				}
-			}
-		}
+			}	
+		}	
 	}
 }
 
@@ -45,17 +48,19 @@ if ($type=="help")
 		'/api/address/balance/<address>/full' => 'details about a given address including an transaction overview',
 		'/api/address/balance/<address>' => 'details about a given address',
 		'/api/address/balance/<address>/less' => 'shows the balance only',
-		'/api/address/isvalid/<address>' => 'will return 1 if the address is valid'
+		'/api/address/isvalid/<address>' => 'returns 1 if the address is valid',
+		'/api/stats/block_height' => 'returns the current block height',
+		'/api/stats/coin_supply' => 'returns the current coin supply',
 	);
 	$help=array(
-		'version' => '1.2',
-		'date' => '2016-04-26',
+		'version' => '1.2.2',
+		'date' => '2017-03-14',
 		'commands' => $commands
 	);
 	echo json_encode($help, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 	exit;
 }
-if ($type=="block" && $pattern!="" && $details=="full" || $type=="block" && $subtype=="latest" && $pattern=="full")
+if ($type=="block" && $pattern!="" && $details=="full" || $type=="block" && $subtype=="latest" && $pattern=="full") 
 {
 	if ($subtype=="hash") {
 		$valid_access=1;
@@ -104,7 +109,7 @@ if ($type=="block" && $pattern!="" && $details=="full" || $type=="block" && $sub
 		$total_coindays=$row['total_coindays'];
 		$total_avgcoindays=$row['total_avgcoindays'];
 		$total_addresses_used=$row['total_addresses_used'];
-		$total_addresses_unused=$row['total_addresses_unused'];
+		$total_addresses_unused=$row['total_addresses_unused'];		
 	}
 	if (isset($blockhash)) {
 	$next_height=($height+1);
@@ -115,7 +120,7 @@ if ($type=="block" && $pattern!="" && $details=="full" || $type=="block" && $sub
 	{
 		$nextblockhash=$row['hash'];
 	}
-
+	
 	$query="SELECT * FROM transactions WHERE blockid = '$blockid'";
 	$result = mysqli_query($dbconn,$query);
 	$tx_array=array();
@@ -130,7 +135,7 @@ if ($type=="block" && $pattern!="" && $details=="full" || $type=="block" && $sub
 		$valueout=$row['valueout'];
 		$fee=$row['fee'];
 		$coindaysdestroyed=$row['coindaysdestroyed'];
-		$avgcoindaysdestroyed=$row['avgcoindaysdestroyed'];
+		$avgcoindaysdestroyed=$row['avgcoindaysdestroyed'];		
 
 		$query="SELECT * FROM vin WHERE parenttxid = '$txid'";
 		$vinresult = mysqli_query($dbconn,$query);
@@ -161,7 +166,7 @@ if ($type=="block" && $pattern!="" && $details=="full" || $type=="block" && $sub
 			);
 			array_push($vin_array, $vin);
 		}
-
+		
 		$query="SELECT * FROM vout WHERE parenttxid = '$txid'";
 		$voutresult = mysqli_query($dbconn,$query);
 		$vout_array=array();
@@ -185,7 +190,7 @@ if ($type=="block" && $pattern!="" && $details=="full" || $type=="block" && $sub
 			);
 			array_push($vout_array, $vout);
 		}
-
+		
 		$tx=array(
 			'tx_hash' => $txhash,
 			'time' => $time,
@@ -201,7 +206,7 @@ if ($type=="block" && $pattern!="" && $details=="full" || $type=="block" && $sub
 		);
 		array_push($tx_array, $tx);
 	}
-
+			
 		$block_array=array(
 			'blockhash' => $blockhash,
 			'size' => $size,
@@ -235,14 +240,14 @@ if ($type=="block" && $pattern!="" && $details=="full" || $type=="block" && $sub
 			'total_addresses_empty' => $total_addresses_unused,
 			'transactions' => $tx_array
 		);
-
-
+		
+		
 		echo json_encode($block_array, JSON_PRETTY_PRINT);
 	} else {
 		echo $blockhash;
 		echo json_encode(array('error' => 'Could not decode hash'), JSON_PRETTY_PRINT);
-	}
-}
+	}	
+}	
 
 if ($type=="block" && $pattern!="" && $details=="reduce" || $type=="block" && $subtype=="latest" && $details=="reduce")
 {
@@ -293,7 +298,7 @@ if ($type=="block" && $pattern!="" && $details=="reduce" || $type=="block" && $s
 		$total_coindays=$row['total_coindays'];
 		$total_avgcoindays=$row['total_avgcoindays'];
 		$total_addresses_used=$row['total_addresses_used'];
-		$total_addresses_unused=$row['total_addresses_unused'];
+		$total_addresses_unused=$row['total_addresses_unused'];		
 	}
 	if (isset($blockhash)) {
 		$next_height=($height+1);
@@ -304,7 +309,7 @@ if ($type=="block" && $pattern!="" && $details=="reduce" || $type=="block" && $s
 		{
 			$nextblockhash=$row['hash'];
 		}
-
+		
 		$query="SELECT * FROM transactions WHERE blockid = '$blockid'";
 		$result = mysqli_query($dbconn,$query);
 		$tx_array=array();
@@ -319,7 +324,7 @@ if ($type=="block" && $pattern!="" && $details=="reduce" || $type=="block" && $s
 			$valueout=$row['valueout'];
 			$fee=$row['fee'];
 			$coindaysdestroyed=$row['coindaysdestroyed'];
-			$avgcoindaysdestroyed=$row['avgcoindaysdestroyed'];
+			$avgcoindaysdestroyed=$row['avgcoindaysdestroyed'];		
 			$tx=array(
 				'tx_hash' => $txhash,
 				'time' => $time,
@@ -333,7 +338,7 @@ if ($type=="block" && $pattern!="" && $details=="reduce" || $type=="block" && $s
 			);
 			array_push($tx_array, $tx);
 		}
-
+			
 		$block_array=array(
 			'blockhash' => $blockhash,
 			'size' => $size,
@@ -367,12 +372,12 @@ if ($type=="block" && $pattern!="" && $details=="reduce" || $type=="block" && $s
 			'total_addresses_empty' => $total_addresses_unused,
 			'transactions' => $tx_array
 		);
-
+		
 		echo json_encode($block_array, JSON_PRETTY_PRINT);
 	} else {
 		echo json_encode(array('error' => 'Could not decode hash'), JSON_PRETTY_PRINT);
-	}
-}
+	}	
+}	
 
 if ($type=="block" && $pattern!="" && $details=="less" || $type=="block" && $subtype=="latest" && $pattern=="less")
 {
@@ -423,7 +428,7 @@ if ($type=="block" && $pattern!="" && $details=="less" || $type=="block" && $sub
 		$total_coindays=$row['total_coindays'];
 		$total_avgcoindays=$row['total_avgcoindays'];
 		$total_addresses_used=$row['total_addresses_used'];
-		$total_addresses_unused=$row['total_addresses_unused'];
+		$total_addresses_unused=$row['total_addresses_unused'];		
 	}
 	if (isset($blockhash)) {
 		$next_height=($height+1);
@@ -466,12 +471,12 @@ if ($type=="block" && $pattern!="" && $details=="less" || $type=="block" && $sub
 			'total_addresses_used' => $total_addresses_used,
 			'total_addresses_empty' => $total_addresses_unused
 		);
-
+		
 		echo json_encode($block_array, JSON_PRETTY_PRINT);
 	} else {
 		echo json_encode(array('error' => 'Could not decode hash'), JSON_PRETTY_PRINT);
-	}
-}
+	}	
+}	
 
 
 
@@ -497,14 +502,14 @@ if ($type=="tx" && $pattern!="" && $details=="full")
 		$valueout=$row['valueout'];
 		$fee=$row['fee'];
 		$coindaysdestroyed=$row['coindaysdestroyed'];
-		$avgcoindaysdestroyed=$row['avgcoindaysdestroyed'];
+		$avgcoindaysdestroyed=$row['avgcoindaysdestroyed'];		
 
 		$query="SELECT * FROM vin WHERE parenttxid = '$txid'";
 		$vinresult = mysqli_query($dbconn,$query);
 		$vin_array=array();
-
+		
 		if (isset($txid)) {
-
+		
 			while($vinrow = $vinresult->fetch_assoc())
 			{
 				$output_txid=$vinrow['output_txid'];
@@ -531,7 +536,7 @@ if ($type=="tx" && $pattern!="" && $details=="full")
 				);
 				array_push($vin_array, $vin);
 			}
-
+			
 			$query="SELECT * FROM vout WHERE parenttxid = '$txid'";
 			$voutresult = mysqli_query($dbconn,$query);
 			$vout_array=array();
@@ -555,7 +560,7 @@ if ($type=="tx" && $pattern!="" && $details=="full")
 				);
 				array_push($vout_array, $vout);
 			}
-
+		
 			$tx_array=array(
 				'tx_hash' => $txhash,
 				'time' => $time,
@@ -569,16 +574,16 @@ if ($type=="tx" && $pattern!="" && $details=="full")
 				'vin' => $vin_array,
 				'vout' => $vout_array
 			);
-		}
+		}	
 	}
 
-	if (isset($txid)) {
+	if (isset($txid)) {	
 		echo json_encode($tx_array, JSON_PRETTY_PRINT);
 	} else {
 		echo json_encode(array('error' => 'Could not decode hash'), JSON_PRETTY_PRINT);
-	}
+	}	
 }
-
+	
 if ($type=="tx" && $pattern!="" && $details=="reduce")
 {
 	if ($subtype=="hash") {
@@ -602,8 +607,8 @@ if ($type=="tx" && $pattern!="" && $details=="reduce")
 		$valueout=$row['valueout'];
 		$fee=$row['fee'];
 		$coindaysdestroyed=$row['coindaysdestroyed'];
-		$avgcoindaysdestroyed=$row['avgcoindaysdestroyed'];
-		if (isset($txid)) {
+		$avgcoindaysdestroyed=$row['avgcoindaysdestroyed'];		
+		if (isset($txid)) {	
 			$query="SELECT address, value, coindaysdestroyed, avgcoindaysdestroyed FROM vin WHERE parenttxid = '$txid'";
 			$vinresult = mysqli_query($dbconn,$query);
 			$vin_array=array();
@@ -621,7 +626,7 @@ if ($type=="tx" && $pattern!="" && $details=="reduce")
 				);
 				array_push($vin_array, $vin);
 			}
-
+			
 			$query="SELECT value, address FROM vout WHERE parenttxid = '$txid'";
 			$voutresult = mysqli_query($dbconn,$query);
 			$vout_array=array();
@@ -635,7 +640,7 @@ if ($type=="tx" && $pattern!="" && $details=="reduce")
 				);
 				array_push($vout_array, $vout);
 			}
-
+			
 			$tx_array=array(
 				'tx_hash' => $txhash,
 				'time' => $time,
@@ -649,15 +654,15 @@ if ($type=="tx" && $pattern!="" && $details=="reduce")
 				'vin' => $vin_array,
 				'vout' => $vout_array
 			);
-		}
+		}	
 	}
 
-
-	if (isset($txid)) {
+		
+	if (isset($txid)) {		
 		echo json_encode($tx_array, JSON_PRETTY_PRINT);
 	} else {
 		echo json_encode(array('error' => 'Could not decode hash'), JSON_PRETTY_PRINT);
-	}
+	}	
 }
 
 if ($type=="tx" && $pattern!="" && $details=="less")
@@ -683,10 +688,10 @@ if ($type=="tx" && $pattern!="" && $details=="less")
 		$valueout=$row['valueout'];
 		$fee=$row['fee'];
 		$coindaysdestroyed=$row['coindaysdestroyed'];
-		$avgcoindaysdestroyed=$row['avgcoindaysdestroyed'];
-	}
-	if (isset($txid)) {
-
+		$avgcoindaysdestroyed=$row['avgcoindaysdestroyed'];		
+	}	
+	if (isset($txid)) {		
+	
 		$tx_array=array(
 			'tx_hash' => $txhash,
 			'time' => $time,
@@ -701,7 +706,7 @@ if ($type=="tx" && $pattern!="" && $details=="less")
 		echo json_encode($tx_array, JSON_PRETTY_PRINT);
 	} else {
 		echo json_encode(array('error' => 'Could not decode hash'), JSON_PRETTY_PRINT);
-	}
+	}	
 }
 
 
@@ -720,7 +725,7 @@ if ($type=="address" && $subtype=="balance" && $pattern!="" && $details=="full")
 	while($row = $result->fetch_assoc())
 	{
 		$address=$row['address'];
-
+		
 		$txquery="SELECT tx.id, tx.txid, tx.time, vin.value AS sent, '' AS received
 				FROM transactions AS tx
 				INNER JOIN vin ON vin.parenttxid = tx.id
@@ -736,7 +741,7 @@ if ($type=="address" && $subtype=="balance" && $pattern!="" && $details=="full")
 		$txidold="";
 		$send="";
 		$received="";
-		while($txrow = $txresult->fetch_assoc()) {
+		while($txrow = $txresult->fetch_assoc()) {	
 			$txid=$txrow['id'];
 			if ($txidold=="") {$txidold==$txid;}
 			if ($txidold!=$txid) {
@@ -759,7 +764,7 @@ if ($type=="address" && $subtype=="balance" && $pattern!="" && $details=="full")
 			if ($received=="") {
 				$received=$txrow['received'];
 			}
-
+			
 		}
 		$balance=$row['balance'];
 		$last_sent=$row['last_sent'];
@@ -767,8 +772,8 @@ if ($type=="address" && $subtype=="balance" && $pattern!="" && $details=="full")
 		$count_sent=$row['count_sent'];
 		$count_received=$row['count_received'];
 		$total_sent=$row['total_sent'];
-		$total_received=$row['total_received'];
-		if (isset($address)) {
+		$total_received=$row['total_received'];		
+		if (isset($address)) {			
 			$address_array=array(
 				'address' => $address,
 				'balance' => $balance,
@@ -780,15 +785,15 @@ if ($type=="address" && $subtype=="balance" && $pattern!="" && $details=="full")
 				'total_received' => $total_received,
 				'transactions' => $tx_array
 			);
-		}
+		}	
 	}
 
-
-	if (isset($address)) {
+		
+	if (isset($address)) {		
 		echo json_encode($address_array, JSON_PRETTY_PRINT);
 	} else {
 		echo json_encode(array('error' => 'Could not decode hash'), JSON_PRETTY_PRINT);
-	}
+	}	
 }
 
 
@@ -813,8 +818,8 @@ if ($type=="address" && $subtype=="balance" && $pattern!="" && $details=="reduce
 		$count_sent=$row['count_sent'];
 		$count_received=$row['count_received'];
 		$total_sent=$row['total_sent'];
-		$total_received=$row['total_received'];
-		if (isset($address)) {
+		$total_received=$row['total_received'];		
+		if (isset($address)) {			
 			$address_array=array(
 				'address' => $address,
 				'balance' => $balance,
@@ -825,15 +830,15 @@ if ($type=="address" && $subtype=="balance" && $pattern!="" && $details=="reduce
 				'total_sent' => $total_sent,
 				'total_received' => $total_received
 			);
-		}
+		}	
 	}
 
-
-	if (isset($address)) {
+		
+	if (isset($address)) {		
 		echo json_encode($address_array, JSON_PRETTY_PRINT);
 	} else {
 		echo json_encode(array('error' => 'Could not decode hash'), JSON_PRETTY_PRINT);
-	}
+	}	
 }
 
 if ($type=="address" && $subtype=="balance" && $pattern!="" && $details=="less")
@@ -852,20 +857,20 @@ if ($type=="address" && $subtype=="balance" && $pattern!="" && $details=="less")
 	{
 		$address=$row['address'];
 		$balance=$row['balance'];
-		if (isset($address)) {
+		if (isset($address)) {			
 			$address_array=array(
 				'address' => $address,
 				'balance' => $balance
 			);
-		}
+		}	
 	}
 
-
-	if (isset($address)) {
+		
+	if (isset($address)) {		
 		echo json_encode($address_array, JSON_PRETTY_PRINT);
 	} else {
 		echo json_encode(array('error' => 'Could not decode hash'), JSON_PRETTY_PRINT);
-	}
+	}	
 }
 
 if ($type=="address" && $subtype=="isvalid" && $pattern!="" && $details=="reduce")
@@ -875,7 +880,7 @@ if ($type=="address" && $subtype=="isvalid" && $pattern!="" && $details=="reduce
 		$array=$emercoin->validateaddress($pattern);
 		echo $array["isvalid"];
 	}
-
+	
 }
 
 if ($type=="address" && $subtype=="ismine" && $pattern!="" && $details=="reduce")
@@ -885,10 +890,61 @@ if ($type=="address" && $subtype=="ismine" && $pattern!="" && $details=="reduce"
 		$array=$emercoin->validateaddress($pattern);
 		echo $array["ismine"];
 	}
+	
+}
 
+if ($type=="stats" && $subtype!="")
+{
+	if ($subtype=="block_height") {
+		$valid_access=1;
+		header('Content-Type: application/json');
+		$query="SELECT height FROM blocks ORDER BY height DESC LIMIT 1";
+		$result = mysqli_query($dbconn,$query);
+		$height_array=array();
+		while($row = $result->fetch_assoc())
+		{
+			$height=$row['height'];
+			if (isset($height)) {			
+				$height_array=array(
+					'block_height' => $height
+				);
+			}	
+		}
+		if (isset($height)) {		
+			echo json_encode($height_array, JSON_PRETTY_PRINT);
+		} else {
+			echo json_encode(array('error' => 'Could not decode hash'), JSON_PRETTY_PRINT);
+		}
+	} else if ($subtype=="coin_supply") {
+		$valid_access=1;
+		header('Content-Type: application/json');
+		$query="SELECT total_coins FROM blocks ORDER BY height DESC LIMIT 1";
+		$result = mysqli_query($dbconn,$query);
+		$supply_array=array();
+		while($row = $result->fetch_assoc())
+		{
+			$total_coins=$row['total_coins'];
+			if (isset($total_coins)) {			
+				$supply_array=array(
+					'coin_supply' => round($total_coins,6)
+				);
+			}	
+		}
+		if (isset($total_coins)) {		
+			echo json_encode($supply_array, JSON_PRETTY_PRINT);
+		} else {
+			echo json_encode(array('error' => 'Could not decode hash'), JSON_PRETTY_PRINT);
+		}
+
+	} else {
+		echo json_encode(array('error' => 'Unknown API call'), JSON_PRETTY_PRINT); exit;
+	}
+
+		
 }
 
 if ($valid_access==0) {
 	echo json_encode(array('error' => 'Unknown API call'), JSON_PRETTY_PRINT);
 }
+
 ?>

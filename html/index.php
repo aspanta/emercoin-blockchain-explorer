@@ -250,7 +250,7 @@ if ($include_file=="api") {
 			<?php echo lang('DO_SERVICE'); ?>
 		</button>
 		<br>
-		<sub><a href="https://hashflare.io/r/AD872628" target="_blank">Cloud Mining</a> | <a href="https://livecoin.net?from=Livecoin-20e00c47" target="_blank">Emercoin Exchange</a></sub>
+		<sub><a href="https://dev.emercoin.mintr.org/api/help">API</a> | <a href="https://hashflare.io/r/AD872628" target="_blank">Cloud Mining</a> | <a href="https://livecoin.net?from=Livecoin-20e00c47" target="_blank">Emercoin Exchange</a></sub>
 		<font size="1%"><a href="emclnx/robotrap.php">&#21;</a></font>
 		<div class="collapse" id="collapseDonations">
 		<p class="text-muted"><sub>
@@ -266,7 +266,7 @@ if ($include_file=="api") {
 		</div>
 		<p class="text-muted">
 		<sub><?php echo lang('INFO_FEEDBACK'); ?>: <a href="https://bitcointalk.org/index.php?topic=958008.0" target="_blank">Bitcointalk</a> | <a href="mailto:admin@mintr.org">E-Mail</a></sub><br>
-		<sub>v.1.6.6</sub></p>
+		<sub>v.1.6.7</sub></p>
       </div>
 </footer>
 </body>

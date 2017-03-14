@@ -249,15 +249,14 @@ if ($include_file=="api") {
 		<button class="btn btn-xs btn-primary" type="button" data-toggle="collapse" data-target="#collapseDonations" aria-expanded="false" aria-controls="collapseDonations">
 			<?php echo lang('DO_SERVICE'); ?>
 		</button>
-		<br><span class="text-muted"> Ads (powered by emcLNX): <?php echo $lnx->GetRand_href(120, 'emercoin.mintr.org'); ?></span><br>
-		<sub><a href="https://hashflare.io/r/AD872628" target="_blank">Cloud Mining</a> | <a href="https://livecoin.net?from=Livecoin-20e00c47" target="_blank">Emercoin Exchange</a></sub>
+		<br>
+		<sub><a href="https://dev.emercoin.mintr.org/api/help">API</a> | <a href="https://hashflare.io/r/AD872628" target="_blank">Cloud Mining</a> | <a href="https://livecoin.net?from=Livecoin-20e00c47" target="_blank">Emercoin Exchange</a></sub>
 		<font size="1%"><a href="emclnx/robotrap.php">&#21;</a></font>
 		<div class="collapse" id="collapseDonations">
 		<p class="text-muted"><sub>
 		<b><?php echo lang('DONATION_DONATION'); ?></b><br>
 			[EMC] <a href="emercoin:EZRcD6ZfGJLaYSkKwZYRkrhVGxk1mimG93?amount=0&label=Donation - emercoin.mintr.org">EZRcD6ZfGJLaYSkKwZYRkrhVGxk1mimG93</a><br>
 			[PPC] <a href="peercoin:PTDnVfgcDVk417rLXrokC3nLj44tFZ3Hyw?amount=0&label=Donation - emercoin.mintr.org">PTDnVfgcDVk417rLXrokC3nLj44tFZ3Hyw</a><br>
-			[BIT] <a href="bitcf:BKR7j2uCPrsZ3VEVw6j3GwA6pkQSpHTbvU?amount=0&label=Donation - emercoin.mintr.org">BKR7j2uCPrsZ3VEVw6j3GwA6pkQSpHTbvU</a><br>
 			[BTC] <a href="bitcoin:1N1G4Ac8vkvMpMKDksrxuHpkRiC86KsBvX ?amount=0&label=Donation - emercoin.mintr.org">1N1G4Ac8vkvMpMKDksrxuHpkRiC86KsBvX </a><br>
 
 		<b><?php echo lang('REFERRAL_REFERRAL'); ?></b><br>
@@ -267,7 +266,7 @@ if ($include_file=="api") {
 		</div>
 		<p class="text-muted">
 		<sub><?php echo lang('INFO_FEEDBACK'); ?>: <a href="https://bitcointalk.org/index.php?topic=958008.0" target="_blank">Bitcointalk</a> | <a href="mailto:admin@mintr.org">E-Mail</a></sub><br>
-		<sub>v.1.6.6</sub></p>
+		<sub>v.1.6.7</sub></p>
       </div>
 </footer>
 </body>

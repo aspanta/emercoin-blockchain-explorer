@@ -117,7 +117,6 @@ if (!empty($_COOKIE["lang"])) {
 		<b><?php echo lang('DONATION_DONATION'); ?></b><br>
 			[EMC] <a href="emercoin:EZRcD6ZfGJLaYSkKwZYRkrhVGxk1mimG93?amount=0&label=Donation - emercoin.mintr.org">EZRcD6ZfGJLaYSkKwZYRkrhVGxk1mimG93</a><br>
 			[PPC] <a href="peercoin:PTDnVfgcDVk417rLXrokC3nLj44tFZ3Hyw?amount=0&label=Donation - emercoin.mintr.org">PTDnVfgcDVk417rLXrokC3nLj44tFZ3Hyw</a><br>
-			[BIT] <a href="bitcf:BKR7j2uCPrsZ3VEVw6j3GwA6pkQSpHTbvU?amount=0&label=Donation - emercoin.mintr.org">BKR7j2uCPrsZ3VEVw6j3GwA6pkQSpHTbvU</a><br>
 			[BTC] <a href="bitcoin:1N1G4Ac8vkvMpMKDksrxuHpkRiC86KsBvX ?amount=0&label=Donation - emercoin.mintr.org">1N1G4Ac8vkvMpMKDksrxuHpkRiC86KsBvX </a><br>
 
 		<b><?php echo lang('REFERRAL_REFERRAL'); ?></b><br>
@@ -127,7 +126,7 @@ if (!empty($_COOKIE["lang"])) {
 		</div>
 		<p class="text-muted">
 		<sub><?php echo lang('INFO_FEEDBACK'); ?>: <a href="https://bitcointalk.org/index.php?topic=958008.0" target="_blank">Bitcointalk</a> | <a href="mailto:admin@mintr.org">E-Mail</a></sub><br>
-		<sub>v.1.6.6</sub></p>
+		<sub>v.1.6.7</sub></p>
       </div>
 </footer>
 </body>
