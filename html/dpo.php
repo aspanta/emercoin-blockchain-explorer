@@ -181,9 +181,9 @@ function PrintTok($tokens) {
 	}
 
 	if ($sn!='') {
-		$sn = preg_replace('/[^0-9A-Za-z_-]/', '', $sn);
 		echo "<p><b>Serial: $sn</b></p>";
 		$filt_key = 'dpo:'.$brand.':'.$sn.':';
+		echo $filt_key."<br>";
 		$filt_list = $emercoin->name_filter($filt_key);
 		if(empty($filt_list)) {
 		echo "Serial $sn not found in the Emercoin blockchain<br>";
