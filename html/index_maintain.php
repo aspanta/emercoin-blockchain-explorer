@@ -109,7 +109,7 @@ if (!empty($_COOKIE["lang"])) {
 		<button class="btn btn-xs btn-primary" type="button" data-toggle="collapse" data-target="#collapseDonations" aria-expanded="false" aria-controls="collapseDonations">
 			<?php echo lang('DO_SERVICE'); ?>
 		</button>
-		<br><span class="text-muted"> Ads (powered by emcLNX): <?php echo $lnx->GetRand_href(120, 'emercoin.mintr.org'); ?></span><br>
+		<br>
 		<sub><a href="https://hashflare.io/r/AD872628" target="_blank">Cloud Mining</a> | <a href="https://livecoin.net?from=Livecoin-20e00c47" target="_blank">Emercoin Exchange</a></sub>
 		<font size="1%"><a href="emclnx/robotrap.php">&#21;</a></font>
 		<div class="collapse" id="collapseDonations">
@@ -126,7 +126,7 @@ if (!empty($_COOKIE["lang"])) {
 		</div>
 		<p class="text-muted">
 		<sub><?php echo lang('INFO_FEEDBACK'); ?>: <a href="https://bitcointalk.org/index.php?topic=958008.0" target="_blank">Bitcointalk</a> | <a href="https://github.com/Valermos/emercoin-blockchain-explorer" target="_blank">GitHub</a> | <a href="mailto:admin@mintr.org">E-Mail</a></sub><br>
-		<sub>v.1.6.7</sub></p>
+		<sub>v.1.6.8</sub></p>
       </div>
 </footer>
 </body>

@@ -1,9 +1,13 @@
-<?php 
+<?php
 error_reporting(E_ALL);
-include "../dbconnect.inc.php";
-$query="SELECT time, difficulty FROM blocks WHERE id > 1 AND flags LIKE '%proof-of-work%' ORDER BY time";
+require_once __DIR__ . '/../../tools/include.php';
+$query="SELECT time, difficulty
+FROM blocks
+WHERE id > 1 AND flags LIKE '%proof-of-work%'
+GROUP BY CEIL((time)/86400)
+ORDER BY time";
 $result = $dbconn->query($query);
-echo $_GET["callback"]; 
+echo $_GET["callback"];
 echo "(";
 $days_array = array();
 while($row = $result->fetch_assoc())

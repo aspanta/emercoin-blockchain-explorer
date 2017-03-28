@@ -1,6 +1,6 @@
-<?php 
+<?php
 error_reporting(E_ALL);
-include "../dbconnect.inc.php";
+require_once __DIR__ . '/../../tools/include.php';
 $query="SELECT (
 YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) )
 ) AS `day` , FROM_UNIXTIME( time ) AS time, (1400/COUNT( hash )) AS blocks
@@ -11,7 +11,7 @@ YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + 
 )
 ORDER BY time";
 $result = $dbconn->query($query);
-echo $_GET["callback"]; 
+echo $_GET["callback"];
 echo "(";
 $days_array = array();
 while($row = $result->fetch_assoc())

@@ -1,9 +1,13 @@
-<?php 
+<?php
 error_reporting(E_ALL);
-include "../dbconnect.inc.php";
-$query="SELECT time, total_addresses_used FROM blocks WHERE id > 1 ORDER BY time";
+require_once __DIR__ . '/../../tools/include.php';
+$query="SELECT time, total_addresses_used
+FROM blocks
+WHERE id > 1
+GROUP BY CEIL((time)/86400)
+ORDER BY time";
 $result = $dbconn->query($query);
-echo $_GET["callback"]; 
+echo $_GET["callback"];
 echo "(";
 $days_array = array();
 while($row = $result->fetch_assoc())
