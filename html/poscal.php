@@ -41,20 +41,14 @@ $('#calcBtn').on('click', function() {
 	calculateProbBlockToday($('#inputAge').val(),$('#inputCoins').val(),$('#inputDiff').val());
 });
 
-$('#inputCoins').on('keyup', function(e) {
-	if (e.which == 13) {
-		calculateProbBlockToday($('#inputAge').val(),$('#inputCoins').val(),$('#inputDiff').val());
-	}
+$('#inputCoins').on('keyup', function() {
+	calculateProbBlockToday($('#inputAge').val(),$('#inputCoins').val(),$('#inputDiff').val());
 });
-$('#inputAge').on('keyup', function(e) {
-	if (e.which == 13) {
-		calculateProbBlockToday($('#inputAge').val(),$('#inputCoins').val(),$('#inputDiff').val());
-	}
+$('#inputAge').on('keyup', function() {
+	calculateProbBlockToday($('#inputAge').val(),$('#inputCoins').val(),$('#inputDiff').val());
 });
-$('#inputDiff').on('keyup', function(e) {
-	if (e.which == 13) {
-		calculateProbBlockToday($('#inputAge').val(),$('#inputCoins').val(),$('#inputDiff').val());
-	}
+$('#inputDiff').on('keyup', function() {
+	calculateProbBlockToday($('#inputAge').val(),$('#inputCoins').val(),$('#inputDiff').val());
 });
 
 function getProb(days, coins, difficulty) {
