@@ -60,6 +60,9 @@ if (isset($_SERVER['REQUEST_URI'])) {
 	if ($URI[1]=="tos") {
 		$include_file="tos";
 	}
+	if ($URI[1]=="poscal") {
+		$include_file="poscal";
+	}
 	$searchinput="";
 	if ($URI[1]=="search") {
 		$include_file="search";
@@ -141,6 +144,7 @@ if ($include_file=="api") {
 				<li <?php if ($include_file=='top') { echo 'class="active"'; } ?>><a href="/top"><?php echo lang('TOP_TOP'); ?></a></li>
 				<li <?php if ($include_file=='nvs') { echo 'class="active"'; } ?>><a href="/nvs"><?php echo lang('NVS_NVS'); ?></a></li>
 				<li <?php if ($include_file=='dpo') { echo 'class="active"'; } ?>><a href="/dpo"><?php echo 'DPO'; ?></a></li>
+				<li <?php if ($include_file=='poscal') { echo 'class="active"'; } ?>><a href="/poscal"><?php echo 'PoS-Calc'; ?></a></li>
 				<li <?php if ($include_file=='emerboard') { echo 'class="active"'; } ?>><a href="/emerboard"><?php echo lang('EMERBOARD_EMERBOARD'); ?></a></li>
 				<?php
 					if (isset($_SESSION['username'])) {
@@ -266,7 +270,7 @@ if ($include_file=="api") {
 		</div>
 		<p class="text-muted">
 		<sub><?php echo lang('INFO_FEEDBACK'); ?>: <a href="https://bitcointalk.org/index.php?topic=958008.0" target="_blank">Bitcointalk</a> | <a href="https://github.com/Valermos/emercoin-blockchain-explorer" target="_blank">GitHub</a> | <a href="mailto:admin@mintr.org">E-Mail</a></sub><br>
-		<sub>v.1.6.8</sub></p>
+		<sub>v.1.7</sub></p>
       </div>
 </footer>
 </body>
