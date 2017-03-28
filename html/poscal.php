@@ -23,7 +23,6 @@
 	  <br>
 	  <div class="row">
 	    <div class="col-sm-offset-2 col-sm-2">
-	      <button class="btn btn-default" id="calcBtn" >Calculate</button>
 	    </div>
 		<div class="col-sm-6">
 	    	<table class="table">
@@ -36,11 +35,6 @@
 </div>
 
 <script>
-
-$('#calcBtn').on('click', function() {
-	calculateProbBlockToday($('#inputAge').val(),$('#inputCoins').val(),$('#inputDiff').val());
-});
-
 $('#inputCoins').on('keyup', function() {
 	calculateProbBlockToday($('#inputAge').val(),$('#inputCoins').val(),$('#inputDiff').val());
 });
