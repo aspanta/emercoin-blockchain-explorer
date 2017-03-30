@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL);
 require_once __DIR__ . '/../../tools/include.php';
-$query="SELECT time, total_coindays
+$query="SELECT time, AVG(total_coindays) as total_coindays
 FROM blocks
 WHERE id > 1
 GROUP BY CEIL((time)/86400)
