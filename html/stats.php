@@ -124,6 +124,20 @@ function TrimTrailingZeroes($nbr) {
 	{
 		$pos_difficulty=$row['difficulty'];
 	}
+	$date_1day=($date-86400);
+	$query = "SELECT COUNT( id ) AS blocks, AVG(difficulty) AS difficulty 
+	FROM `blocks` 
+	WHERE time >= '$date_1day' AND flags = 'proof-of-work'";
+	$result = $dbconn->query($query);
+	$current_pow_hashrate=0;
+	while($row = $result->fetch_assoc())
+	{
+		$pow_difficulty=$row['difficulty'];
+		$pow_blocks=$row['blocks'];
+		$block_interval=bcdiv(86400,$pow_blocks,8);
+		$current_pow_hashrate=bcdiv(bcmul($pow_difficulty,bcpow(2,32,8),8),$block_interval,8);
+		$current_pow_hashrate=bcdiv($current_pow_hashrate,1000000000000,8); //to THash
+	}
 	
 	$date_14days=($date-1209600);
 	$query="SELECT (
@@ -215,6 +229,36 @@ function TrimTrailingZeroes($nbr) {
 	$total_avgcoindays_estimate=linearRegression($regrassionArray_total_avgcoindays, $values_total_avgcoindays, $count);
 	if ($total_avgcoindays_estimate>=0) {$total_avgcoindays_color="success";}else{$total_avgcoindays_color="danger";}
 
+	
+	$query="SELECT ( YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) ) ) AS `day` , FROM_UNIXTIME( time ) AS time, MAX( id ) AS id, COUNT( id ) AS blocks, AVG(difficulty) AS pow_difficulty 
+		FROM `blocks` 
+		WHERE time >= '$date_14days' AND flags = 'proof-of-work'
+		GROUP BY ( YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) ) ) 
+		ORDER BY time";
+	$result = $dbconn->query($query);
+	$count=0;
+	$regrassionArray_pow_hashrate=array();
+	$values_pow_hashrate=array();
+	while($row = $result->fetch_assoc())
+	{
+		if ($count==0) {
+			$values_pow_hashrate['firstXvalue']=$row['id'];
+		}
+		$count++;
+		
+		$pow_difficulty=$row['pow_difficulty'];
+		$pow_blocks=$row['blocks'];
+		$block_interval=bcdiv(86400,$pow_blocks,8);
+		$pow_hashrate=bcdiv(bcmul($pow_difficulty,bcpow(2,32,8),8),$block_interval,8);
+		$pow_hashrate=bcdiv($pow_hashrate,1000000000000,8); //to THash
+		$regrassionArray_pow_hashrate[$count]['x']=$count;
+		$regrassionArray_pow_hashrate[$count]['y']=$pow_hashrate;
+		$timestamp=$row['id'];
+	}
+	$values_pow_hashrate['lastXvalue']=$timestamp;
+	$hashrate_estimate=linearRegression($regrassionArray_pow_hashrate, $values_pow_hashrate, $count);
+	if ($hashrate_estimate>=0) {$hashrate_color="success";}else{$hashrate_color="danger";}
+	
 	$query="SELECT (
 		YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) )
 		) AS `day` , FROM_UNIXTIME( time ) AS time, AVG( difficulty ) AS pow_difficulty, COUNT(id) AS pow_blocks, MAX( id ) AS id
@@ -301,6 +345,7 @@ function TrimTrailingZeroes($nbr) {
 				echo '<tr><td width="25%">'.lang('CHAIN_LENGTH').'</td><td width="15%">'.$height.' '.lang('BLOCKS_BLOCKS').'</td><td><span class="label label-'.$block_color.'">'.TrimTrailingZeroes(number_format($block_estimate,2)).'</span> <span class="label label-'.$pos_blocks_color.'">PoS: '.TrimTrailingZeroes(number_format($pos_blocks_estimate,2)).'</span> <span class="label label-'.$pow_blocks_color.'">PoW: '.TrimTrailingZeroes(number_format($pow_blocks_estimate,2)).'</span></td></tr>';
 				echo '<tr><td>'.lang('COINS_AVAILABLE').'</td><td>'.TrimTrailingZeroes(number_format($total_coins,2)).' EMC</td><td><span class="label label-'.$mint_color.'">'.TrimTrailingZeroes(number_format($mint_estimate,2)).' EMC</span> <span class="label label-'.$mint_color.'">'.lang('ANNUAL_GROWTH').': '.TrimTrailingZeroes(number_format($annual_inflation,2)).' %</span></td></tr>';
 				echo '<tr><td>'.lang('POW_DIFFICULTY').'</td><td>'.TrimTrailingZeroes(number_format($pow_difficulty,2)).'</td><td><span class="label label-'.$pow_color.'">'.TrimTrailingZeroes(number_format($pow_estimate,2)).'</span></td></tr>';
+				echo '<tr><td>PoW Hashrate</td><td>'.TrimTrailingZeroes(number_format($current_pow_hashrate,2)).' THash</td><td><span class="label label-'.$hashrate_color.'">'.TrimTrailingZeroes(number_format($hashrate_estimate,2)).' THash</span></td></tr>';
 				echo '<tr><td>'.lang('POS_DIFFICULTY').'</td><td >'.TrimTrailingZeroes(number_format($pos_difficulty,2)).'</td><td><span class="label label-'.$pos_color.'">'.TrimTrailingZeroes(number_format($pos_estimate,2)).'</span></td></tr>';
 				echo '<tr><td>'.lang('TRANSACTIONS_TRANSACTIONS').'</td><td >'.TrimTrailingZeroes(number_format($alltransactions,2)).'</td><td><span class="label label-'.$tx_color.'">'.TrimTrailingZeroes(number_format($tx_estimate,2)).'</span></td></tr>';
 				echo '<tr><td>'.lang('AVG_COIN').'</td><td >'.TrimTrailingZeroes(number_format($total_avgcoindays,2)).'</td><td><span class="label label-'.$total_avgcoindays_color.'">'.TrimTrailingZeroes(number_format($total_avgcoindays_estimate,2)).'</span></td></tr>';

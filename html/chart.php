@@ -3,7 +3,7 @@
 ?>
 <div class="container">
 
-<h3><?php echo lang('PER_CHARTS'); ?></h3><hr>
+<h3><?php echo lang('AVERAGE_CHARTS'); ?> <small><?php echo lang('DAILY_SUMMARY'); ?></small></h3><hr>
 
 <button type="submit" class="btn btn-primry" id="coinsupply"><?php echo lang('COIN_SUPPLY'); ?> <i class="fa fa-caret-down"></i></button>
 <div id="coinsupply_container" style="width:100%; height:375px; text-align:center;"></div><br><hr>
@@ -38,7 +38,7 @@ function get_coinsupply() {
             title : {
                 text : '<?php echo lang('COIN_SUPPLY'); ?>'
             },
-			
+
             series : [{
                 name : 'EMC',
 				color: '#8d2d9e',
@@ -47,7 +47,7 @@ function get_coinsupply() {
                     valueDecimals: 2
                 }
             }],
-			
+
 			credits: {
 				enabled: false
 			},
@@ -91,7 +91,7 @@ function get_powdifficulty() {
             title : {
                 text : '<?php echo lang('POW_DIFFICULTY'); ?>'
             },
-			
+
             series : [{
                 name : '<?php echo lang('POW_DIFF'); ?>',
 				color: '#8d2d9e',
@@ -100,7 +100,60 @@ function get_powdifficulty() {
                     valueDecimals: 2
                 }
             }],
-	
+
+			credits: {
+				enabled: false
+			},
+        });
+    });
+};
+</script>
+
+
+<button type="submit" class="btn btn-primry" id="powhashrate">PoW Hashrate <i class="fa fa-caret-down"></i></button>
+<div id="powhashrate_container" style="width:100%; height:375px; text-align:center;"></div><br><hr>
+<script type="text/javascript">
+$('#powhashrate_container').hide();
+powhashrate=0;
+$( "#powhashrate" ).click(function() {
+	if (powhashrate==0) {
+		$('#powhashrate_container').html('<i class="fa fa-spinner fa-3x fa-pulse"></i>');
+		$('#powhashrate').html('PoW Hashrate <i class="fa fa-caret-up"></i>');
+		$('#powhashrate_container').show();
+		get_powhashrate();
+		powhashrate=1;
+	} else {
+		$('#powhashrate').html('PoW Hashrate <i class="fa fa-caret-down"></i>');
+		$('#powhashrate_container').hide(500);
+		$('#powhashrate_container').html('');
+		powhashrate=0;
+	}
+});
+
+function get_powhashrate() {
+
+    $.getJSON('/charts/get_powhashrate.php?callback=?', function (data) {
+        // Create the chart
+         $('#powhashrate_container').highcharts('StockChart', {
+
+
+            rangeSelector : {
+                selected : 1
+            },
+
+            title : {
+                text : 'PoW Hashrate'
+            },
+
+            series : [{
+                name : 'THash',
+				color: '#8d2d9e',
+                data : data,
+                tooltip: {
+                    valueDecimals: 2
+                }
+            }],
+
 			credits: {
 				enabled: false
 			},
@@ -144,7 +197,7 @@ function get_posdifficulty() {
             title : {
                 text : '<?php echo lang('POS_DIFFICULTY'); ?>'
             },
-			
+
             series : [{
                 name : '<?php echo lang('POS_DIFF'); ?>',
 				color: '#8d2d9e',
@@ -153,7 +206,7 @@ function get_posdifficulty() {
                     valueDecimals: 2
                 }
             }],
-		
+
 			credits: {
 				enabled: false
 			},
@@ -195,7 +248,7 @@ function get_avgcoinage() {
             title : {
                 text : '<?php echo lang('AVG_AGE'); ?>'
             },
-			
+
             series : [{
                 name : '<?php echo lang('COIN_AGE'); ?>',
 				color: '#8d2d9e',
@@ -204,7 +257,7 @@ function get_avgcoinage() {
                     valueDecimals: 2
                 }
             }],
-		
+
 			credits: {
 				enabled: false
 			},
@@ -246,7 +299,7 @@ function get_coinage() {
             title : {
                 text : '<?php echo lang('TOTAL_AGE'); ?>'
             },
-			
+
             series : [{
                 name : '<?php echo lang('COIN_AGE'); ?>',
 				color: '#8d2d9e',
@@ -255,7 +308,7 @@ function get_coinage() {
                     valueDecimals: 2
                 }
             }],
-		
+
 			credits: {
 				enabled: false
 			},
@@ -299,7 +352,7 @@ function get_addressinuse() {
             title : {
                 text : '<?php echo lang('USED_ADDRESSES'); ?>'
             },
-			
+
             series : [{
                 name : '<?php echo lang('USED_ADDRESSES'); ?>',
 				color: '#8d2d9e',
@@ -308,7 +361,7 @@ function get_addressinuse() {
                     valueDecimals: 0
                 }
             }],
-	
+
 			credits: {
 				enabled: false
 			},
@@ -351,7 +404,7 @@ function get_addressunused() {
             title : {
                 text : '<?php echo lang('UNUSED_ADDRESSES'); ?>'
             },
-			
+
             series : [{
                 name : '<?php echo lang('UNUSED_ADDRESSES'); ?>',
 				color: '#8d2d9e',
@@ -360,7 +413,7 @@ function get_addressunused() {
                     valueDecimals: 0
                 }
             }],
-	
+
 			credits: {
 				enabled: false
 			},
@@ -369,8 +422,6 @@ function get_addressunused() {
 };
 </script>
 
-
-<h3><?php echo lang('AVERAGE_CHARTS'); ?> <small><?php echo lang('DAILY_SUMMARY'); ?></small></h3><hr>
 
 <button type="submit" class="btn btn-primry" id="transactions"><?php echo lang('TRANSACTIONS_TRANSACTIONS'); ?> <i class="fa fa-caret-down"></i></button> <i class="text-muted"><sub><?php echo lang('TX_ONLY'); ?></sub></i>
 <div id="transactions_container" style="width:100%; height:375px; text-align:center;"></div><br><hr>
@@ -405,7 +456,7 @@ function get_transactions() {
             title : {
                 text : '<?php echo lang('TRANSACTIONS_TRANSACTIONS'); ?>'
             },
-			
+
             series : [{
                 name : 'Tx',
 				color: '#8d2d9e',
@@ -414,7 +465,7 @@ function get_transactions() {
                     valueDecimals: 0
                 }
             }],
-		
+
 			credits: {
 				enabled: false
 			},
@@ -456,7 +507,7 @@ function get_dailycoindays() {
             title : {
                 text : '<?php echo lang('COIN_DESTROYED'); ?>'
             },
-			
+
             series : [{
                 name : '<?php echo lang('DAYS_DAYS'); ?>',
 				color: '#8d2d9e',
@@ -465,7 +516,7 @@ function get_dailycoindays() {
                     valueDecimals: 2
                 }
             }],
-		
+
 			credits: {
 				enabled: false
 			},
@@ -507,7 +558,7 @@ function get_timebetweenblocks() {
             title : {
                 text : '<?php echo lang('MINUTES_BLOCKS'); ?>'
             },
-			
+
             series : [{
                 name : '<?php echo lang('MINUTES_MINUTES'); ?>',
 				color: '#8d2d9e',
@@ -516,7 +567,7 @@ function get_timebetweenblocks() {
                     valueDecimals: 2
                 }
             }],
-		
+
 			credits: {
 				enabled: false
 			},
@@ -554,7 +605,7 @@ function get_powposblocks() {
 
             $('#powposblocks_container').highcharts('StockChart', {
 				colors: ['#FA5858', '#01DF01'],
-				
+
                 rangeSelector: {
                     selected: 1
                 },
@@ -562,11 +613,11 @@ function get_powposblocks() {
 				title : {
 					text : '<?php echo lang('POW_BLOCKS'); ?>'
 				},
-				
+
 				 yAxis: {
                     floor:0
                 },
-				
+
                 tooltip: {
                     pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
                     valueDecimals: 2
@@ -623,7 +674,7 @@ function get_powposmint() {
 
             $('#powposmint_container').highcharts('StockChart', {
 				colors: ['#FA5858', '#01DF01'],
-				
+
                 rangeSelector: {
                     selected: 1
                 },
@@ -631,11 +682,11 @@ function get_powposmint() {
 				title : {
 					text : '<?php echo lang('POW_MINTED'); ?>'
 				},
-				
+
 				 yAxis: {
                     floor:0
                 },
-				
+
                 tooltip: {
                     pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
                     valueDecimals: 2
