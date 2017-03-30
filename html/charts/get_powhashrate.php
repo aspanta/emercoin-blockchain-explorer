@@ -17,7 +17,7 @@ while($row = $result->fetch_assoc())
 	$pow_blocks=$row['blocks'];
 	$block_interval=bcdiv(86400,$pow_blocks,8);
 	$current_pow_hashrate=bcdiv(bcmul($pow_difficulty,bcpow(2,32,8),8),$block_interval,8);
-	$current_pow_hashrate=bcdiv($current_pow_hashrate,1000000000000,8); //to THash
+	$current_pow_hashrate=bcdiv($current_pow_hashrate,1000000000000,8); //to TH/s
 	$day_array = array($time_epoch, round($current_pow_hashrate,2));
 	array_push($days_array, $day_array);
 }

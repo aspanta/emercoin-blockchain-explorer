@@ -161,7 +161,7 @@ if (isset($hash) && $hash!="") {
 					$input.='<hr>';
 				}
 				if (($row['coinbase'])!="") {
-					$input.='coinbase<br>0 EMC / 0 <sup>Days</sup>/<sub>Coin</sub></td>';
+					$input.='coinbase<br><sup>Days</sup>/<sub>Coin</sub> / 0 EMC</td>';
 				} else {
 					if ($row['address']=="") { 
 						$address="N/A";
@@ -172,7 +172,7 @@ if (isset($hash) && $hash!="") {
 					if ($address!="N/A") {
 						$input.='<a href="/cointrace/received/vin/'.$vid.'" target="_blank"><button type="button" class="btn btn-link" style="padding:0"><i class="fa fa-code-fork fa-rotate-270"></button></a></i>';
 					}
-					$input.=' <span class="label label-danger">'.TrimTrailingZeroes(number_format($row['sent'],8)).' EMC</span> / '.TrimTrailingZeroes(number_format($row['coindaysdestroyed'],2)).' Days => '.TrimTrailingZeroes(number_format($row['avgcoindaysdestroyed'],2)).' <sup>Days</sup>/<sub>Coin</sub><br>';
+					$input.=' '.TrimTrailingZeroes(number_format($row['coindaysdestroyed'],2)).' Days / <span class="label label-danger">'.TrimTrailingZeroes(number_format($row['sent'],8)).' EMC</span> => '.TrimTrailingZeroes(number_format($row['avgcoindaysdestroyed'],2)).' <sup>Days</sup>/<sub>Coin</sub><br>';
 					$countvin++;
 				}
 			}
