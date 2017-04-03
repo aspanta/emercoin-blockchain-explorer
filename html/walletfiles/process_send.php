@@ -40,7 +40,10 @@ if ($reserved_balance=="") {$reserved_balance=0;}
 $account_balance-=$reserved_balance;
 
 $amount=$_POST['amount'];
-
+if ((float)$amount<0.01) {
+	echo "5";
+	exit;
+}
 $address=$_POST['address'];
 
 try {

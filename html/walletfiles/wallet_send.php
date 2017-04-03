@@ -118,14 +118,14 @@ $("#btnSendCoins").click(function() {
 
 function validateAddress(address) {
 	jQuery.ajaxSetup({async:false});
-	$.get('<?php echo $blockchainurl; ?>/api/address/isvalid/'+address,function(data){
+	$.get('https://emercoin.mintr.org/api/address/isvalid/'+address,function(data){
 		if(data==1) {
 			validAddress=1;
 		} else {
 			validAddress=0;
 		}
 	});	
-	$.get('<?php echo $blockchainurl; ?>/api/address/ismine/'+address,function(data){
+	$.get('https://emercoin.mintr.org/api/address/ismine/'+address,function(data){
 		withdraw_fee=<?php echo $withdraw_fee; ?>;
 		send_to_another_account_fee=<?php echo $send_to_another_account_fee; ?>;
 		if (mineAddress==1) {
@@ -171,7 +171,7 @@ function validateAmount() {
 	number=number.replace("," , ".");
 	$('#textAmount').val(number);
 	if ($.isNumeric(number)) {
-		if (number>=0.000001) {
+		if (number>=0.01) {
 			amount=number;
 			amountWOfee=Math.round($('#textAmount').val() * 1000000) / 1000000;
 			amount=(parseFloat(amount)+parseFloat(fee));
@@ -211,9 +211,11 @@ function sentCoins()
 		if (response=='0') {
 			$.notify("<?php echo lang('TRANSACTION_QUEUE'); ?>","success");
 			setTimeout("location.reload(true);",750);
-		}
-		else if (response=='1') {
+		} else if (response=='1') {
 			$.notify("Something went wrong.","error");
+			$("#btnSendCoins").removeClass("disabled");
+		} else if (response=='5') {
+			$.notify("Min. 0.01 EMC","error");
 			$("#btnSendCoins").removeClass("disabled");
 		} else if (response=='10') {
 			$.notify(amountWOfee+" <?php echo lang('EMC_TO'); ?> "+$('#textAddress').val() ,"success");
