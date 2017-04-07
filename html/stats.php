@@ -114,15 +114,15 @@ function TrimTrailingZeroes($nbr) {
 	$result = $dbconn->query($query);
 	while($row = $result->fetch_assoc())
 	{
-		$pow_difficulty=$row['difficulty'];
+		$current_pow_difficulty=$row['difficulty'];
 	}
 
 	$query = "SELECT difficulty FROM blocks WHERE flags LIKE '%proof-of-stake%' ORDER BY height DESC LIMIT 1";
 	$result = $dbconn->query($query);
 	$pos_difficulty=1;
 	while($row = $result->fetch_assoc())
-	{
-		$pos_difficulty=$row['difficulty'];
+	{ 
+		$current_pos_difficulty=$row['difficulty'];
 	}
 	$date_1day=($date-86400);
 	$query = "SELECT COUNT( id ) AS blocks, AVG(difficulty) AS difficulty
@@ -344,9 +344,9 @@ function TrimTrailingZeroes($nbr) {
 			<?php
 				echo '<tr><td width="25%">'.lang('CHAIN_LENGTH').'</td><td width="15%">'.$height.' '.lang('BLOCKS_BLOCKS').'</td><td><span class="label label-'.$block_color.'">'.TrimTrailingZeroes(number_format($block_estimate,2)).'</span> <span class="label label-'.$pos_blocks_color.'">PoS: '.TrimTrailingZeroes(number_format($pos_blocks_estimate,2)).'</span> <span class="label label-'.$pow_blocks_color.'">PoW: '.TrimTrailingZeroes(number_format($pow_blocks_estimate,2)).'</span></td></tr>';
 				echo '<tr><td>'.lang('COINS_AVAILABLE').'</td><td>'.TrimTrailingZeroes(number_format($total_coins,2)).' EMC</td><td><span class="label label-'.$mint_color.'">'.TrimTrailingZeroes(number_format($mint_estimate,2)).' EMC</span> <span class="label label-'.$mint_color.'">'.lang('ANNUAL_GROWTH').': '.TrimTrailingZeroes(number_format($annual_inflation,2)).' %</span></td></tr>';
-				echo '<tr><td>'.lang('POW_DIFFICULTY').'</td><td>'.TrimTrailingZeroes(number_format($pow_difficulty,2)).'</td><td><span class="label label-'.$pow_color.'">'.TrimTrailingZeroes(number_format($pow_estimate,2)).'</span></td></tr>';
+				echo '<tr><td>'.lang('POW_DIFFICULTY').'</td><td>'.TrimTrailingZeroes(number_format($current_pow_difficulty,2)).'</td><td><span class="label label-'.$pow_color.'">'.TrimTrailingZeroes(number_format($pow_estimate,2)).'</span></td></tr>';
 				echo '<tr><td>PoW Hashrate</td><td>'.TrimTrailingZeroes(number_format($current_pow_hashrate,2)).' TH/s</td><td><span class="label label-'.$hashrate_color.'">'.TrimTrailingZeroes(number_format($hashrate_estimate,2)).' TH/s</span></td></tr>';
-				echo '<tr><td>'.lang('POS_DIFFICULTY').'</td><td >'.TrimTrailingZeroes(number_format($pos_difficulty,2)).'</td><td><span class="label label-'.$pos_color.'">'.TrimTrailingZeroes(number_format($pos_estimate,2)).'</span></td></tr>';
+				echo '<tr><td>'.lang('POS_DIFFICULTY').'</td><td >'.TrimTrailingZeroes(number_format($current_pos_difficulty,2)).'</td><td><span class="label label-'.$pos_color.'">'.TrimTrailingZeroes(number_format($pos_estimate,2)).'</span></td></tr>';
 				echo '<tr><td>'.lang('TRANSACTIONS_TRANSACTIONS').'</td><td >'.TrimTrailingZeroes(number_format($alltransactions,2)).'</td><td><span class="label label-'.$tx_color.'">'.TrimTrailingZeroes(number_format($tx_estimate,2)).'</span></td></tr>';
 				echo '<tr><td>'.lang('AVG_COIN').'</td><td >'.TrimTrailingZeroes(number_format($total_avgcoindays,2)).'</td><td><span class="label label-'.$total_avgcoindays_color.'">'.TrimTrailingZeroes(number_format($total_avgcoindays_estimate,2)).'</span></td></tr>';
 				echo '<tr><td>'.lang('CHAIN_SIZE').'</td><td>'.TrimTrailingZeroes(number_format($size,2)).' '.$unit.'</td><td><span class="label label-'.$size_color.'">'.$size_24.' '.$unit_24.'</span></td></tr>';
