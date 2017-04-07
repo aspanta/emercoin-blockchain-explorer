@@ -11,12 +11,12 @@
 		$blocks=$row['blocks'];
 		$size_24=$row['size_24'];
 		$unit_24="B";
-		if ($size_24 >= 1024 && $size_24 < 102400) {
+		if ($size_24 >= 1024 && $size_24 < 1024000) {
 			$unit_24="KiB";
 			$size_24=bcdiv($size_24,1024,2);
-		} elseif ($size_24 >= 102400) {
+		} elseif ($size_24 >= 1024000) {
 			$unit_24="MiB";
-			$size_24=bcdiv($size_24,102400,2);
+			$size_24=bcdiv($size_24,1024000,2);
 		}
 		$minted=$row['minted'];
 		$transactions=$row['transactions'];
@@ -25,7 +25,7 @@
 		$tx_out=$row['tx_out'];
 		$coin_dest=$row['coin_dest'];
 	}
-	
+
 	$query="SELECT COUNT(id) AS pos
 	FROM blocks WHERE time >= '$date_24' AND flags LIKE '%proof-of-stake%'";
 	$result = $dbconn->query($query);
@@ -33,12 +33,12 @@
 	{
 		$pos=$row['pos'];
 	}
-	
-	$query="SELECT COUNT(txid) as transactions, 
-	SUM(valuein) as input, 
-	SUM(valueout) AS output, 
-	SUM(coindaysdestroyed) AS coindaysdestroyed, 
-	(SUM(coindaysdestroyed)/SUM(valuein)) AS avgcoindaysdestroyed, 
+
+	$query="SELECT COUNT(txid) as transactions,
+	SUM(valuein) as input,
+	SUM(valueout) AS output,
+	SUM(coindaysdestroyed) AS coindaysdestroyed,
+	(SUM(coindaysdestroyed)/SUM(valuein)) AS avgcoindaysdestroyed,
 	SUM(fee) AS fees
 	FROM `transactions`
 	WHERE time >=  '$date_24' AND fee > '0'";
@@ -50,13 +50,13 @@
 		$wo_avg_coin_dest=$row['avgcoindaysdestroyed'];
 		$wo_tx_out=$row['output'];
 		$wo_fees=$row['fees'];
-	}	
+	}
 
 	$query="SELECT tx.time, vin.parenttxid as txid
 		FROM transactions AS tx
 		INNER JOIN vin ON vin.parenttxid = tx.id AND vin.coinbase=''
 		WHERE tx.time >= '$date_24' AND tx.fee > '0'
-		UNION 
+		UNION
 		SELECT tx.time, vout.parenttxid as txid
 		FROM transactions AS tx
 		INNER JOIN vout ON vout.parenttxid = tx.id
@@ -68,7 +68,7 @@
 	{
 		$wo_totaltx++;
 	}
-	
+
 function TrimTrailingZeroes($nbr) {
     return strpos($nbr,'.')!==false ? rtrim(rtrim($nbr,'0'),'.') : $nbr;
 }
@@ -76,9 +76,9 @@ function TrimTrailingZeroes($nbr) {
 
 
 <div class="container">
-	
-	
-	
+
+
+
 	<p>
 		<?php
 	$query="SELECT height, total_addresses_used, total_addresses_unused, total_coins, total_avgcoindays
@@ -92,7 +92,7 @@ function TrimTrailingZeroes($nbr) {
 		$total_coins=$row['total_coins'];
 		$total_avgcoindays=$row['total_avgcoindays'];
 	}
-	
+
 	$query="SELECT SUM(size) AS size, SUM(numtx) AS alltransactions
 	FROM blocks";
 	$result = $dbconn->query($query);
@@ -101,12 +101,12 @@ function TrimTrailingZeroes($nbr) {
 		$size=$row['size'];
 		$alltransactions=$row['alltransactions'];
 		$unit="B";
-		if ($size >= 1024 && $size < 102400) {
+		if ($size >= 1024 && $size < 1024000) {
 			$unit="KiB";
 			$size=bcdiv($size,1024,2);
-		} elseif ($size >= 102400) {
+		} elseif ($size >= 1024000) {
 			$unit="MiB";
-			$size=bcdiv($size,102400,2);
+			$size=bcdiv($size,1024000,2);
 		}
 	}
 
@@ -116,7 +116,7 @@ function TrimTrailingZeroes($nbr) {
 	{
 		$pow_difficulty=$row['difficulty'];
 	}
-	
+
 	$query = "SELECT difficulty FROM blocks WHERE flags LIKE '%proof-of-stake%' ORDER BY height DESC LIMIT 1";
 	$result = $dbconn->query($query);
 	$pos_difficulty=1;
@@ -125,8 +125,8 @@ function TrimTrailingZeroes($nbr) {
 		$pos_difficulty=$row['difficulty'];
 	}
 	$date_1day=($date-86400);
-	$query = "SELECT COUNT( id ) AS blocks, AVG(difficulty) AS difficulty 
-	FROM `blocks` 
+	$query = "SELECT COUNT( id ) AS blocks, AVG(difficulty) AS difficulty
+	FROM `blocks`
 	WHERE time >= '$date_1day' AND flags = 'proof-of-work'";
 	$result = $dbconn->query($query);
 	$current_pow_hashrate=0;
@@ -138,17 +138,17 @@ function TrimTrailingZeroes($nbr) {
 		$current_pow_hashrate=bcdiv(bcmul($pow_difficulty,bcpow(2,32,8),8),$block_interval,8);
 		$current_pow_hashrate=bcdiv($current_pow_hashrate,1000000000000,8); //to THash
 	}
-	
+
 	$date_14days=($date-1209600);
 	$query="SELECT (
 		YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) )
 		) AS `day` , FROM_UNIXTIME( time ) AS time, MAX( height ) AS height, MAX( total_coins ) AS mint, SUM(size) AS size, SUM(numtx) AS tx, AVG(total_addresses_used) AS total_addresses_used, AVG(total_addresses_unused) AS total_addresses_unused, (AVG(total_addresses_used)+AVG(total_addresses_unused)) AS total_addresses, AVG(total_avgcoindays) AS total_avgcoindays, MAX( id ) AS id
-		FROM `blocks` 
+		FROM `blocks`
 		WHERE time >= '$date_14days'
 		GROUP BY (
 		YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) )
 		)
-		ORDER BY time";		
+		ORDER BY time";
 	$result = $dbconn->query($query);
 	$count=0;
 	$regrassionArray_height=array();
@@ -210,7 +210,7 @@ function TrimTrailingZeroes($nbr) {
 	$values_total_addresses_unused['lastXvalue']=$timestamp;
 	$values_total_addresses['lastXvalue']=$timestamp;
 	$values_total_avgcoindays['lastXvalue']=$timestamp;
-	
+
 	$block_estimate=linearRegression($regrassionArray_height, $values_height, $count);
 	if ($block_estimate>=0) {$block_color="success";}else{$block_color="danger";}
 	$mint_estimate=linearRegression($regrassionArray_mint, $values_mint, $count);
@@ -229,11 +229,11 @@ function TrimTrailingZeroes($nbr) {
 	$total_avgcoindays_estimate=linearRegression($regrassionArray_total_avgcoindays, $values_total_avgcoindays, $count);
 	if ($total_avgcoindays_estimate>=0) {$total_avgcoindays_color="success";}else{$total_avgcoindays_color="danger";}
 
-	
-	$query="SELECT ( YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) ) ) AS `day` , FROM_UNIXTIME( time ) AS time, MAX( id ) AS id, COUNT( id ) AS blocks, AVG(difficulty) AS pow_difficulty 
-		FROM `blocks` 
+
+	$query="SELECT ( YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) ) ) AS `day` , FROM_UNIXTIME( time ) AS time, MAX( id ) AS id, COUNT( id ) AS blocks, AVG(difficulty) AS pow_difficulty
+		FROM `blocks`
 		WHERE time >= '$date_14days' AND flags = 'proof-of-work'
-		GROUP BY ( YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) ) ) 
+		GROUP BY ( YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) ) )
 		ORDER BY time";
 	$result = $dbconn->query($query);
 	$count=0;
@@ -245,7 +245,7 @@ function TrimTrailingZeroes($nbr) {
 			$values_pow_hashrate['firstXvalue']=$row['id'];
 		}
 		$count++;
-		
+
 		$pow_difficulty=$row['pow_difficulty'];
 		$pow_blocks=$row['blocks'];
 		$block_interval=bcdiv(86400,$pow_blocks,8);
@@ -258,16 +258,16 @@ function TrimTrailingZeroes($nbr) {
 	$values_pow_hashrate['lastXvalue']=$timestamp;
 	$hashrate_estimate=linearRegression($regrassionArray_pow_hashrate, $values_pow_hashrate, $count);
 	if ($hashrate_estimate>=0) {$hashrate_color="success";}else{$hashrate_color="danger";}
-	
+
 	$query="SELECT (
 		YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) )
 		) AS `day` , FROM_UNIXTIME( time ) AS time, AVG( difficulty ) AS pow_difficulty, COUNT(id) AS pow_blocks, MAX( id ) AS id
-		FROM `blocks` 
+		FROM `blocks`
 		WHERE time >= '$date_14days' AND flags LIKE '%proof-of-work%'
 		GROUP BY (
 		YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) )
 		)
-		ORDER BY time";		
+		ORDER BY time";
 	$result = $dbconn->query($query);
 	$count=0;
 	$regrassionArray_pow_blocks=array();
@@ -295,16 +295,16 @@ function TrimTrailingZeroes($nbr) {
 	if ($pow_estimate>=0) {$pow_color="success";}else{$pow_color="danger";}
 	$pow_blocks_estimate=linearRegression($regrassionArray_pow_blocks, $values_pow_blocks, $count);
 	if ($pow_blocks_estimate>=0) {$pow_blocks_color="success";}else{$pow_blocks_color="danger";}
-	
+
 	$query="SELECT (
 		YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) )
 		) AS `day` , FROM_UNIXTIME( time ) AS time, AVG( difficulty ) AS pos_difficulty, COUNT(id) AS pos_blocks, MAX( id ) AS id
-		FROM `blocks` 
+		FROM `blocks`
 		WHERE time >= '$date_14days' AND flags LIKE '%proof-of-stake%'
 		GROUP BY (
 		YEAR( FROM_UNIXTIME( `time` ) ) *3650 + MONTH( FROM_UNIXTIME( `time` ) ) *120 + DAY( FROM_UNIXTIME( `time` ) )
 		)
-		ORDER BY time";		
+		ORDER BY time";
 	$result = $dbconn->query($query);
 	$count=0;
 	$regrassionArray_pos_blocks=array();
@@ -332,7 +332,7 @@ function TrimTrailingZeroes($nbr) {
 	if ($pos_estimate>=0) {$pos_color="success";}else{$pos_color="danger";}
 	$pos_blocks_estimate=linearRegression($regrassionArray_pos_blocks, $values_pos_blocks, $count);
 	if ($pos_blocks_estimate>=0) {$pos_blocks_color="success";}else{$pos_blocks_color="danger";}
-	
+
 	?>
 	<div class="panel panel-default">
 		<div class="panel-heading"><a class="btn btn-primary" data-toggle="collapse" href="#BlockChainStatistics" aria-expanded="true" aria-controls="BlockChainStatistics"><?php echo lang('BLOCKCHAIN_STATISTICS'); ?></a></div>
@@ -361,7 +361,7 @@ function TrimTrailingZeroes($nbr) {
 		</div>
 		<div class="panel-footer"><footer class="text-muted"><i><sub><?php echo lang('GENERAL_DAYS'); ?></sub></i></footer></div>
 	</div>
-	
+
 	<div class="panel panel-default">
 		<div class="panel-heading"><a class="btn btn-primary" data-toggle="collapse" href="#24hStatistics" aria-expanded="false" aria-controls="24hStatistics"><?php echo lang('24H_STATISTICS'); ?></a></div>
 		<div class="panel-body collapse" id="24hStatistics">
@@ -374,7 +374,7 @@ function TrimTrailingZeroes($nbr) {
 				echo '<tr><td>'.lang('TOTAL_FEES').'</td><td>'.TrimTrailingZeroes(number_format($fees,8)).' EMC</td></tr>';
 				echo '<tr><td>'.lang('TOTAL_OUTPUT').'</td><td>'.TrimTrailingZeroes(number_format($tx_out,8)).' EMC</td></tr>';
 				echo '<tr><td>'.lang('COIN_DESTROYED').'</td><td>'.TrimTrailingZeroes(number_format($coin_dest,8)).' => '.TrimTrailingZeroes(number_format(($coin_dest/$tx_in),8)).' '.lang('DAYS_COIN').'</td></tr>';
-			?>	
+			?>
 			</table>
 		</div>
 		<div class="panel-footer"><footer class="text-muted"><i><sub><?php echo lang('BASED_H'); ?></sub></i></footer></div>
@@ -393,11 +393,11 @@ function TrimTrailingZeroes($nbr) {
 		</div>
 		<div class="panel-footer"><footer class="text-muted"><i><sub><?php echo lang('BASED_TRANSACTIONS'); ?></sub></i></footer></div>
 	</div>
-	<?php 
+	<?php
 	$query="SELECT MAX(height) AS height FROM blocks";
 	$result = $dbconn->query($query);
 	while($row = $result->fetch_assoc())
-	{	
+	{
 		$height=$row['height'];
 	}
 	$query="SELECT COUNT(id) AS total_values FROM nvs";
@@ -421,7 +421,7 @@ function TrimTrailingZeroes($nbr) {
 	$query="SELECT type, COUNT(type) AS count
 	FROM `nvs`
 	WHERE expires_at > '$height'
-	GROUP BY type  
+	GROUP BY type
 	ORDER by count DESC
 	LIMIT 5
 	";
@@ -444,7 +444,7 @@ function TrimTrailingZeroes($nbr) {
 				echo '<tr><td>'.lang('TOP_TYPES').'</td><td>';
 				foreach ($types as $type => $value) {
 					echo $type.': <span class="badge">'.$value.'</span><br>';
-				}	
+				}
 				echo'</td></tr>';
 			?>
 			</table>
@@ -452,9 +452,9 @@ function TrimTrailingZeroes($nbr) {
 		<div class="panel-footer"></div>
 	</div>
 
-	
+
 </div>
-<?php 
+<?php
 function linearRegression ($regrassionArray, $values, $count) {
 	$x_avg=0;
 	$y_avg=0;
@@ -484,7 +484,7 @@ function linearRegression ($regrassionArray, $values, $count) {
 	$x_avg_diff_X_y_avg_diff_sum_avg=bcdiv($x_avg_diff_X_y_avg_diff_sum,$count,8);
 	$x_avg_X2_sum_avg=bcdiv($x_avg_X2_sum,$count,8);
 	$y_avg_X2_sum_avg=bcdiv($y_avg_X2_sum,$count,8);
-	
+
 	$Sx=sqrt($x_avg_X2_sum_avg);
 	$Sy=sqrt($y_avg_X2_sum_avg);
 	if (($Sy*$Sx)!=0) {
@@ -494,7 +494,7 @@ function linearRegression ($regrassionArray, $values, $count) {
 	else {
 		$Myx=0;
 	}
-		
+
 	return $Myx;
 }
 ?>
