@@ -3,7 +3,7 @@
 ?>
 <div class="container">
 
-<h3><?php echo lang('AVERAGE_CHARTS'); ?> <small><?php echo lang('DAILY_SUMMARY'); ?></small></h3><hr>
+<h3><?php echo lang('PER_CHARTS'); ?></h3><hr>
 
 <button type="submit" class="btn btn-primry" id="coinsupply"><?php echo lang('COIN_SUPPLY'); ?> <i class="fa fa-caret-down"></i></button>
 <div id="coinsupply_container" style="width:100%; height:375px; text-align:center;"></div><br><hr>
@@ -146,7 +146,7 @@ function get_powhashrate() {
             },
 
             series : [{
-                name : 'THash',
+                name : 'TH/s',
 				color: '#8d2d9e',
                 data : data,
                 tooltip: {
@@ -422,6 +422,7 @@ function get_addressunused() {
 };
 </script>
 
+<h3><?php echo lang('AVERAGE_CHARTS'); ?> <small><?php echo lang('DAILY_SUMMARY'); ?></small></h3><hr>
 
 <button type="submit" class="btn btn-primry" id="transactions"><?php echo lang('TRANSACTIONS_TRANSACTIONS'); ?> <i class="fa fa-caret-down"></i></button> <i class="text-muted"><sub><?php echo lang('TX_ONLY'); ?></sub></i>
 <div id="transactions_container" style="width:100%; height:375px; text-align:center;"></div><br><hr>

@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../tools/include.php';
 $query="SELECT time, AVG(difficulty) as difficulty
 FROM blocks
 WHERE id > 1 AND flags LIKE '%proof-of-work%'
-GROUP BY CEIL((time)/86400)
+GROUP BY CEIL((time)/3600)
 ORDER BY time";
 $result = $dbconn->query($query);
 echo $_GET["callback"];

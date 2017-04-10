@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../tools/include.php';
 $query="SELECT time, AVG(total_coins) as total_coins
 FROM blocks
 WHERE id > 1
-GROUP BY CEIL((time)/86400)
+GROUP BY CEIL((time)/3600)
 ORDER BY time";
 $result = $dbconn->query($query);
 echo $_GET["callback"];
